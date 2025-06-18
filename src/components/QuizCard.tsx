@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
@@ -6,6 +5,7 @@ import { Progress } from '@/components/ui/progress';
 const QuizCard = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState('');
+  const [animatingAnswer, setAnimatingAnswer] = useState('');
 
   const questions = [
     {
@@ -52,17 +52,19 @@ const QuizCard = () => {
 
   const handleAnswerSelect = (answerId: string) => {
     setSelectedAnswer(answerId);
+    setAnimatingAnswer(answerId);
     
-    // Auto-advance to next question after a short delay
+    // Auto-advance to next question after animation completes
     setTimeout(() => {
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
         setSelectedAnswer('');
+        setAnimatingAnswer('');
       } else {
         // Quiz completed - could navigate to results page
         console.log('Quiz completed!');
       }
-    }, 500);
+    }, 800); // Increased delay to allow animation to complete
   };
 
   const handleBackClick = () => {
@@ -117,13 +119,27 @@ const QuizCard = () => {
             <button
               key={answer.id}
               onClick={() => handleAnswerSelect(answer.id)}
-              className={`w-full text-left px-4 py-3 rounded transition-all duration-200 border-l-4 border-white ${
+              className={`w-full text-left px-4 py-3 transition-all duration-200 border-l-4 border-white relative overflow-hidden ${
                 selectedAnswer === answer.id
                   ? 'bg-blue-400 text-white'
                   : 'text-white hover:bg-blue-500'
               }`}
             >
-              <span className="font-medium">{answer.id}.</span> {answer.text}
+              {/* Animation overlay */}
+              <div 
+                className={`absolute inset-0 bg-white transition-transform duration-500 ease-out ${
+                  animatingAnswer === answer.id 
+                    ? 'transform translate-x-0' 
+                    : 'transform -translate-x-full'
+                }`}
+              />
+              
+              {/* Button content */}
+              <div className={`relative z-10 transition-colors duration-300 ${
+                animatingAnswer === answer.id ? 'text-blue-600' : 'text-white'
+              }`}>
+                <span className="font-medium">{answer.id}.</span> {answer.text}
+              </div>
             </button>
           ))}
         </div>
