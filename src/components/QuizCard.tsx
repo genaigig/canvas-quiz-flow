@@ -117,7 +117,7 @@ const QuizCard = () => {
             <button
               key={answer.id}
               onClick={() => handleAnswerSelect(answer.id)}
-              className={`w-full text-left px-4 py-3 rounded transition-all duration-200 ${
+              className={`w-full text-left px-4 py-3 rounded transition-all duration-200 border-l-4 border-white ${
                 selectedAnswer === answer.id
                   ? 'bg-blue-400 text-white'
                   : 'text-white hover:bg-blue-500'
